@@ -33,11 +33,11 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="max-w-4xl mx-auto text-center px-6 pt-12 pb-8">
-    <span class="inline-block bg-neutral-900 border border-neutral-800 text-[#CCFF00] font-semibold text-xs px-3.5 py-1.5 rounded-full mb-4">
+  <section class="max-w-4xl mx-auto text-center px-6 pt-10 pb-6">
+    <span class="inline-block bg-neutral-900 border border-neutral-800 text-[#CCFF00] font-semibold text-xs px-3.5 py-1.5 rounded-full mb-3">
       ✨ AI Content Creation Platform
     </span>
-    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
+    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white mb-3 leading-tight">
       One video in. <span class="text-[#CCFF00]">More content out.</span>
     </h1>
     <p class="text-neutral-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
@@ -57,6 +57,9 @@
         </button>
         <button type="button" onclick="switchTab('video')" id="tab-video" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer">
           <i class="fa-solid fa-video"></i> AI Short Video Editor
+        </button>
+        <button type="button" onclick="switchTab('membership')" id="tab-membership" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer">
+          <i class="fa-solid fa-crown text-[#CCFF00]"></i> Membership
         </button>
       </div>
     </div>
@@ -85,13 +88,25 @@
             </button>
           </div>
 
-          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6">
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
-              Generated Output
-              <span class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Ready</span>
-            </h3>
-            <div id="outputArea" class="space-y-4 text-sm text-neutral-300">
-              <div class="h-64 flex flex-col items-center justify-center text-center text-neutral-600">
+          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
+                Generated Output
+                <span id="repurposeStatus" class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Ready</span>
+              </h3>
+              <!-- Background Progress Bar Container -->
+              <div id="repurposeProgressContainer" class="hidden mb-4 space-y-2">
+                <div class="flex justify-between text-xs text-neutral-400">
+                  <span id="repurposeProgressText">Processing background AI task...</span>
+                  <span id="repurposePercentage">0%</span>
+                </div>
+                <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+                  <div id="repurposeBar" class="bg-[#CCFF00] h-full w-0 transition-all duration-300"></div>
+                </div>
+              </div>
+            </div>
+            <div id="outputArea" class="space-y-4 text-sm text-neutral-300 overflow-y-auto max-h-[350px]">
+              <div class="h-56 flex flex-col items-center justify-center text-center text-neutral-600">
                 <i class="fa-solid fa-wand-magic-sparkles text-2xl mb-2"></i>
                 <p>Paste text on the left and click generate to create your social assets.</p>
               </div>
@@ -118,13 +133,25 @@
             </button>
           </div>
 
-          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6">
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
-              Transcript Output
-              <span class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Whisper AI</span>
-            </h3>
-            <div id="transcriptOutput" class="space-y-3 text-sm text-neutral-300">
-              <div class="h-64 flex flex-col items-center justify-center text-center text-neutral-600">
+          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
+                Transcript Output
+                <span id="transcribeStatus" class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Whisper AI</span>
+              </h3>
+              <!-- Progress Bar -->
+              <div id="transcribeProgressContainer" class="hidden mb-4 space-y-2">
+                <div class="flex justify-between text-xs text-neutral-400">
+                  <span id="transcribeProgressText">Uploading audio to Whisper...</span>
+                  <span id="transcribePercentage">0%</span>
+                </div>
+                <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+                  <div id="transcribeBar" class="bg-[#CCFF00] h-full w-0 transition-all duration-300"></div>
+                </div>
+              </div>
+            </div>
+            <div id="transcriptOutput" class="space-y-3 text-sm text-neutral-300 overflow-y-auto max-h-[350px]">
+              <div class="h-56 flex flex-col items-center justify-center text-center text-neutral-600">
                 <i class="fa-solid fa-file-lines text-2xl mb-2"></i>
                 <p>Upload an audio or video file to generate a timestamped transcript.</p>
               </div>
@@ -159,10 +186,63 @@
             </button>
           </div>
 
-          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-center text-center">
+            <div id="videoProgressContainer" class="hidden mb-4 space-y-2 text-left">
+              <div class="flex justify-between text-xs text-neutral-400">
+                <span id="videoProgressText">Rendering vertical short...</span>
+                <span id="videoPercentage">0%</span>
+              </div>
+              <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+                <div id="videoBar" class="bg-[#CCFF00] h-full w-0 transition-all duration-300"></div>
+              </div>
+            </div>
             <div id="videoOutput" class="h-64 w-full flex flex-col items-center justify-center text-neutral-600 border border-neutral-800 rounded-xl bg-neutral-900">
               <i class="fa-solid fa-play text-3xl text-[#CCFF00] mb-2"></i>
               <p class="text-sm text-neutral-400">Rendered vertical short preview will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOL 4: Membership & Pricing -->
+      <div id="content-membership" class="workspace-section hidden">
+        <div class="text-center max-w-3xl mx-auto py-4">
+          <h2 class="text-2xl font-black text-white mb-2">Upgrade Your Creator Workflow</h2>
+          <p class="text-neutral-400 text-sm mb-8">Unlock unlimited AI generations, priority Whisper transcription, and 4K vertical video rendering.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <!-- Free Plan -->
+            <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs bg-neutral-900 text-neutral-400 px-3 py-1 rounded-full font-semibold">Current Plan</span>
+                <h3 class="text-xl font-bold text-white mt-3">Free Creator</h3>
+                <p class="text-xs text-neutral-400 mt-1">For getting started with basic repurposing.</p>
+                <div class="text-3xl font-black text-white my-4">$0 <span class="text-xs font-normal text-neutral-500">/ forever</span></div>
+                <ul class="space-y-2.5 text-xs text-neutral-300 mb-6">
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> 1 Daily Trial Generation</li>
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> Standard Text Repurposing</li>
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> Basic Audio Transcription</li>
+                </ul>
+              </div>
+              <button disabled class="w-full bg-neutral-800 text-neutral-400 font-bold py-3 rounded-xl text-xs cursor-not-allowed">Active Plan</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="bg-neutral-950 border-2 border-[#CCFF00] rounded-2xl p-6 flex flex-col justify-between relative shadow-xl shadow-[#CCFF00]/5">
+              <div class="absolute -top-3 right-6 bg-[#CCFF00] text-black font-extrabold text-[10px] px-3 py-0.5 rounded-full uppercase tracking-wider">Most Popular</div>
+              <div>
+                <span class="text-xs bg-[#CCFF00]/20 text-[#CCFF00] px-3 py-1 rounded-full font-semibold">Pro Creator</span>
+                <h3 class="text-xl font-bold text-white mt-3">Unlimited Studio</h3>
+                <p class="text-xs text-neutral-400 mt-1">For professional creators and agencies scaling fast.</p>
+                <div class="text-3xl font-black text-white my-4">$29 <span class="text-xs font-normal text-neutral-500">/ month</span></div>
+                <ul class="space-y-2.5 text-xs text-neutral-300 mb-6">
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> Unlimited AI Repurposing</li>
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> Priority Whisper AI Transcription</li>
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> 4K AI Vertical Video Short Editor</li>
+                  <li><i class="fa-solid fa-check text-[#CCFF00] mr-2"></i> Custom Tone & Brand Voice</li>
+                </ul>
+              </div>
+              <button type="button" onclick="alert('Redirecting to secure checkout...')" class="w-full bg-[#CCFF00] text-black font-bold py-3 rounded-xl text-xs hover:bg-[#b3e600] transition-all cursor-pointer shadow-lg">Upgrade to Pro</button>
             </div>
           </div>
         </div>
@@ -198,18 +278,18 @@
     </div>
   </div>
 
-  <!-- JavaScript Functions -->
+  <!-- JavaScript Functions with Live Percentage Progress Trackers -->
   <script>
     function switchTab(tabName) {
       document.querySelectorAll('.workspace-section').forEach(el => el.classList.add('hidden'));
-      ['repurpose', 'transcribe', 'video'].forEach(t => {
+      ['repurpose', 'transcribe', 'video', 'membership'].forEach(t => {
         const btn = document.getElementById('tab-' + t);
-        btn.className = "text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer";
+        if(btn) btn.className = "text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer";
       });
 
       document.getElementById('content-' + tabName).classList.remove('hidden');
       const activeBtn = document.getElementById('tab-' + tabName);
-      activeBtn.className = "bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all cursor-pointer";
+      if(activeBtn) activeBtn.className = "bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all cursor-pointer";
     }
 
     function handleFileSelect(input, textId) {
@@ -240,6 +320,49 @@
       alert('Successfully logged in!');
     }
 
+    // Helper function for smooth background progress ticker
+    async function simulateProgress(prefix, totalDurationMs, onComplete) {
+      const container = document.getElementById(prefix + 'ProgressContainer');
+      const bar = document.getElementById(prefix + 'Bar');
+      const percentageText = document.getElementById(prefix + 'Percentage');
+      const statusText = document.getElementById(prefix + 'ProgressText');
+      
+      container.classList.remove('hidden');
+      let progress = 0;
+      const intervalTime = 100;
+      const increment = 100 / (totalDurationMs / intervalTime);
+
+      const timer = setInterval(() => {
+        progress += increment;
+        if (progress >= 95) {
+          progress = 95; // Hold at 95% until real network finishes
+        }
+        const currentPercent = Math.round(progress);
+        bar.style.width = currentPercent + '%';
+        percentageText.innerText = currentPercent + '%';
+        
+        if (currentPercent > 30 && currentPercent < 70) {
+          statusText.innerText = 'AI analyzing context & structure...';
+        } else if (currentPercent >= 70) {
+          statusText.innerText = 'Formatting viral social assets...';
+        }
+      }, intervalTime);
+
+      try {
+        await onComplete(() => {
+          clearInterval(timer);
+          bar.style.width = '100%';
+          percentageText.innerText = '100%';
+          statusText.innerText = 'Complete!';
+          setTimeout(() => container.classList.add('hidden'), 1500);
+        });
+      } catch (err) {
+        clearInterval(timer);
+        container.classList.add('hidden');
+        throw err;
+      }
+    }
+
     async function generate() {
       const input = document.getElementById('inputText').value;
       const tone = document.getElementById('toneSelect').value;
@@ -251,121 +374,52 @@
         return;
       }
 
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating 10 Live Assets...';
-      
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+      output.innerHTML = '<div class="text-[#CCFF00] text-center py-12 animate-pulse">Initializing background AI worker...</div>';
+
       try {
-        const response = await fetch('/.netlify/functions/repurpose', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: input, tone: tone })
+        await simulateProgress('repurpose', 2500, async (finishProgress) => {
+          const response = await fetch('/.netlify/functions/repurpose', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: input, tone: tone })
+          });
+
+          const result = await response.json();
+          finishProgress();
+
+          if (!response.ok) {
+            throw new Error(result.error || 'Failed to generate assets');
+          }
+
+          let htmlOutput = '';
+          if (result.scripts) {
+            htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🎬 Video Scripts (${result.scripts.length})</h4>`;
+            result.scripts.forEach((s, i) => {
+              htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${s}</div>`;
+            });
+            htmlOutput += `</div>`;
+          }
+
+          if (result.xPosts) {
+            htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (${result.xPosts.length})</h4>`;
+            result.xPosts.forEach((p, i) => {
+              htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${p}</div>`;
+            });
+            htmlOutput += `</div>`;
+          }
+
+          if (result.linkedinPosts) {
+            htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">💼 LinkedIn Posts (${result.linkedinPosts.length})</h4>`;
+            result.linkedinPosts.forEach((l, i) => {
+              htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${l}</div>`;
+            });
+            htmlOutput += `</div>`;
+          }
+
+          output.innerHTML = htmlOutput;
         });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to generate assets');
-        }
-
-        let htmlOutput = '';
-
-        if (result.scripts) {
-          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🎬 Video Scripts (${result.scripts.length})</h4>`;
-          result.scripts.forEach((s, i) => {
-            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${s}</div>`;
-          });
-          htmlOutput += `</div>`;
-        }
-
-        if (result.xPosts) {
-          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (${result.xPosts.length})</h4>`;
-          result.xPosts.forEach((p, i) => {
-            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${p}</div>`;
-          });
-          htmlOutput += `</div>`;
-        }
-
-        if (result.linkedinPosts) {
-          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">💼 LinkedIn Posts (${result.linkedinPosts.length})</h4>`;
-          result.linkedinPosts.forEach((l, i) => {
-            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${l}</div>`;
-          });
-          htmlOutput += `</div>`;
-        }
-
-        output.innerHTML = htmlOutput;
       } catch (err) {
         output.innerHTML = `<div class="text-red-400 p-4 bg-red-950/30 rounded-xl text-center">Error: ${err.message}</div>`;
       } finally {
-        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets';
-      }
-    }
-
-    async function transcribeAudio() {
-      const fileInput = document.getElementById('audioFile');
-      const output = document.getElementById('transcriptOutput');
-
-      if (!fileInput.files || !fileInput.files[0]) {
-        alert('Please select an audio or video file first!');
-        return;
-      }
-
-      const file = fileInput.files[0];
-      output.innerHTML = '<div class="text-[#CCFF00] font-semibold text-center py-12 animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Uploading & transcribing with Whisper AI...</div>';
-
-      try {
-        const base64Data = await toBase64(file);
-
-        const response = await fetch('/.netlify/functions/transcribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fileData: base64Data.split(',')[1],
-            fileName: file.name
-          })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to transcribe file');
-        }
-
-        output.innerHTML = `
-          <div class="bg-neutral-900 p-4 rounded-xl border border-neutral-800 space-y-2">
-            <div class="text-xs text-[#CCFF00] font-bold flex items-center justify-between">
-              <span>✨ Whisper AI Transcription</span>
-              <span>${file.name}</span>
-            </div>
-            <p class="text-neutral-200 leading-relaxed text-sm">${result.text}</p>
-          </div>
-        `;
-      } catch (err) {
-        output.innerHTML = `<div class="text-red-400 p-4 bg-red-950/30 rounded-xl text-center">Error: ${err.message}</div>`;
-      }
-    }
-
-    function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
-
-    function renderVideo() {
-      const output = document.getElementById('videoOutput');
-      output.innerHTML = '<div class="text-[#CCFF00] font-semibold animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cropping to 9:16 & burning captions...</div>';
-      setTimeout(() => {
-        output.innerHTML = `
-          <div class="text-center">
-            <i class="fa-solid fa-circle-check text-4xl text-[#CCFF00] mb-2"></i>
-            <p class="font-bold text-white mb-1">Vertical Short Ready!</p>
-            <a href="#" class="text-xs bg-[#CCFF00] text-black font-bold px-3 py-1.5 rounded-lg inline-block mt-2">Download MP4</a>
-          </div>
-        `;
-      }, 2000);
-    }
-  </script>
-</body>
-</html>
+        btn
