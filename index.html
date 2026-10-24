@@ -198,6 +198,7 @@
     </div>
   </div>
 
+  <!-- JavaScript Functions -->
   <script>
     function switchTab(tabName) {
       document.querySelectorAll('.workspace-section').forEach(el => el.classList.add('hidden'));
@@ -239,32 +240,64 @@
       alert('Successfully logged in!');
     }
 
-    function generate() {
+    async function generate() {
       const input = document.getElementById('inputText').value;
+      const tone = document.getElementById('toneSelect').value;
       const btn = document.getElementById('genBtn');
       const output = document.getElementById('outputArea');
 
       if (!input.trim()) {
-        alert('Please paste some text first!');
+        alert('Please paste some source text first!');
         return;
       }
 
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating 10 Assets...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating 10 Live Assets...';
       
-      setTimeout(() => {
+      try {
+        const response = await fetch('/.netlify/functions/repurpose', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: input, tone: tone })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to generate assets');
+        }
+
+        let htmlOutput = '';
+
+        if (result.scripts) {
+          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🎬 Video Scripts (${result.scripts.length})</h4>`;
+          result.scripts.forEach((s, i) => {
+            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${s}</div>`;
+          });
+          htmlOutput += `</div>`;
+        }
+
+        if (result.xPosts) {
+          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (${result.xPosts.length})</h4>`;
+          result.xPosts.forEach((p, i) => {
+            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${p}</div>`;
+          });
+          htmlOutput += `</div>`;
+        }
+
+        if (result.linkedinPosts) {
+          htmlOutput += `<div class="mb-4"><h4 class="font-bold text-[#CCFF00] mb-2">💼 LinkedIn Posts (${result.linkedinPosts.length})</h4>`;
+          result.linkedinPosts.forEach((l, i) => {
+            htmlOutput += `<div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800 text-xs">${i+1}. ${l}</div>`;
+          });
+          htmlOutput += `</div>`;
+        }
+
+        output.innerHTML = htmlOutput;
+      } catch (err) {
+        output.innerHTML = `<div class="text-red-400 p-4 bg-red-950/30 rounded-xl text-center">Error: ${err.message}</div>`;
+      } finally {
         btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets';
-        output.innerHTML = `
-          <div>
-            <h4 class="font-bold text-[#CCFF00] mb-2">🎬 Short Video Scripts (3)</h4>
-            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">1. Hook: Stop creating content from scratch. Here is how to turn 1 video into 10 posts...</div>
-            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">2. Hook: The biggest creator mistake in 2026? Ignoring short-form clips.</div>
-          </div>
-          <div>
-            <h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (2)</h4>
-            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">One video in. 10 assets out. Work smarter, not harder.</div>
-          </div>
-        `;
-      }, 1200);
+      }
     }
 
     async function transcribeAudio() {
