@@ -68,7 +68,6 @@
             </div>
             <div>
               <label class="block text-sm font-semibold text-neutral-300 mb-2">Content Tone</label>
-              <!-- High-contrast background and text for clear visibility -->
               <select id="toneSelect" class="w-full bg-neutral-950 border border-neutral-700 rounded-xl p-3 text-white font-medium focus:outline-none focus:border-[#CCFF00]">
                 <option value="professional" class="bg-neutral-900 text-white py-2">Professional & Authoritative</option>
                 <option value="casual" class="bg-neutral-900 text-white py-2">Casual & Conversational</option>
@@ -101,10 +100,12 @@
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-semibold text-neutral-300 mb-2">Upload Audio or Video File</label>
-              <div class="border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors cursor-pointer">
+              <!-- Functional Upload Box -->
+              <div onclick="document.getElementById('audioFile').click()" class="border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors cursor-pointer">
+                <input type="file" id="audioFile" class="hidden" accept="audio/*,video/*" onchange="handleFileSelect(this, 'audioFileName')" />
                 <i class="fa-solid fa-microphone-lines text-3xl text-[#CCFF00] mb-3"></i>
-                <p class="text-sm font-medium text-white mb-1">Click to upload or drag and drop</p>
-                <p class="text-xs text-neutral-500">MP3, MP4, WAV, or M4A (Max 500MB)</p>
+                <p id="audioFileName" class="text-sm font-medium text-white mb-1">Click to upload or select file</p>
+                <p class="text-xs text-neutral-500">MP3, MP4, WAV, or M4A</p>
               </div>
             </div>
             <button onclick="transcribeAudio()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg">
@@ -133,10 +134,12 @@
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-semibold text-neutral-300 mb-2">Upload Source Video (.mp4)</label>
-              <div class="border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors cursor-pointer">
+              <!-- Functional Video Upload Box -->
+              <div onclick="document.getElementById('videoFile').click()" class="border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors cursor-pointer">
+                <input type="file" id="videoFile" class="hidden" accept="video/mp4,video/quicktime" onchange="handleFileSelect(this, 'videoFileName')" />
                 <i class="fa-solid fa-video text-3xl text-[#CCFF00] mb-3"></i>
-                <p class="text-sm font-medium text-white mb-1">Upload long-form video</p>
-                <p class="text-xs text-neutral-500">Optimized for automated vertical clipping (9:16)</p>
+                <p id="videoFileName" class="text-sm font-medium text-white mb-1">Upload long-form video</p>
+                <p class="text-xs text-neutral-500">Optimized for vertical clipping (9:16)</p>
               </div>
             </div>
             <div>
@@ -191,7 +194,7 @@
     </div>
   </div>
 
-  <!-- JavaScript for Tabs, Generators & Modal -->
+  <!-- JavaScript -->
   <script>
     function switchTab(tabName) {
       document.querySelectorAll('.workspace-section').forEach(el => el.classList.add('hidden'));
@@ -203,6 +206,12 @@
       document.getElementById('content-' + tabName).classList.remove('hidden');
       const activeBtn = document.getElementById('tab-' + tabName);
       activeBtn.className = "bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all";
+    }
+
+    function handleFileSelect(input, textId) {
+      if (input.files && input.files[0]) {
+        document.getElementById(textId).innerText = "📄 " + input.files[0].name;
+      }
     }
 
     function openModal(type) {
