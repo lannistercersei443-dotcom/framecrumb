@@ -6,6 +6,12 @@
   <title>Framecrumb — One video in. More content out.</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    button, [role="button"], input[type="file"] {
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body class="bg-[#0A0A0A] text-neutral-100 font-sans antialiased min-h-screen">
 
@@ -20,8 +26,8 @@
         <span id="userStatus" class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-3 py-1.5 rounded-full flex items-center gap-1.5">
           <i class="fa-solid fa-shield-halved text-[#CCFF00]"></i> Daily Trial: 1/1
         </span>
-        <button onclick="openModal('signin')" class="text-sm font-semibold text-neutral-300 hover:text-white transition-colors">Sign In</button>
-        <button onclick="openModal('signup')" class="text-sm font-bold bg-[#CCFF00] text-black px-4 py-2 rounded-xl hover:bg-[#b3e600] transition-colors">Get Started</button>
+        <button type="button" onclick="openModal('signin')" class="text-sm font-semibold text-neutral-300 hover:text-white transition-colors cursor-pointer">Sign In</button>
+        <button type="button" onclick="openModal('signup')" class="text-sm font-bold bg-[#CCFF00] text-black px-4 py-2 rounded-xl hover:bg-[#b3e600] transition-colors cursor-pointer">Get Started</button>
       </div>
     </div>
   </header>
@@ -43,13 +49,13 @@
   <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
     <div class="flex justify-center mb-8">
       <div class="bg-neutral-900 border border-neutral-800 p-1.5 rounded-2xl flex flex-wrap justify-center gap-2">
-        <button onclick="switchTab('repurpose')" id="tab-repurpose" class="bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all">
+        <button type="button" onclick="switchTab('repurpose')" id="tab-repurpose" class="bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all cursor-pointer">
           <i class="fa-solid fa-wand-magic-sparkles"></i> 10 Social Assets
         </button>
-        <button onclick="switchTab('transcribe')" id="tab-transcribe" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all">
+        <button type="button" onclick="switchTab('transcribe')" id="tab-transcribe" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer">
           <i class="fa-solid fa-file-lines"></i> Speech Transcription
         </button>
-        <button onclick="switchTab('video')" id="tab-video" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all">
+        <button type="button" onclick="switchTab('video')" id="tab-video" class="text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer">
           <i class="fa-solid fa-video"></i> AI Short Video Editor
         </button>
       </div>
@@ -74,7 +80,7 @@
                 <option value="educational" class="bg-neutral-900 text-white py-2">Educational & Step-by-Step</option>
               </select>
             </div>
-            <button id="genBtn" onclick="generate()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg">
+            <button type="button" id="genBtn" onclick="generate()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer">
               <i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets
             </button>
           </div>
@@ -94,18 +100,239 @@
         </div>
       </div>
 
-      <!-- TOOL 2: Speech Transcription (Connected to Whisper API) -->
+      <!-- TOOL 2: Speech Transcription -->
       <div id="content-transcribe" class="workspace-section hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-semibold text-neutral-300 mb-2">Upload Audio or Video File</label>
-              <div onclick="document.getElementById('audioFile').click()" class="border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors cursor-pointer">
-                <input type="file" id="audioFile" class="hidden" accept="audio/*,video/*" onchange="handleFileSelect(this, 'audioFileName')" />
+              <div class="relative border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors overflow-hidden">
+                <input type="file" id="audioFile" accept="audio/*,video/*" onchange="handleFileSelect(this, 'audioFileName')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                 <i class="fa-solid fa-microphone-lines text-3xl text-[#CCFF00] mb-3"></i>
-                <p id="audioFileName" class="text-sm font-medium text-white mb-1">Click to upload or select file</p>
+                <p id="audioFileName" class="text-sm font-medium text-white mb-1">Tap here to select file from iPad</p>
                 <p class="text-xs text-neutral-500">MP3, MP4, WAV, or M4A</p>
               </div>
             </div>
-            <button onclick="transcribeAudio()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg">
-              <i class="fa-solid fa-file-audio">
+            <button type="button" onclick="transcribeAudio()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+              <i class="fa-solid fa-file-audio"></i> Transcribe with Whisper AI
+            </button>
+          </div>
+
+          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
+              Transcript Output
+              <span class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Whisper AI</span>
+            </h3>
+            <div id="transcriptOutput" class="space-y-3 text-sm text-neutral-300">
+              <div class="h-64 flex flex-col items-center justify-center text-center text-neutral-600">
+                <i class="fa-solid fa-file-lines text-2xl mb-2"></i>
+                <p>Upload an audio or video file to generate a timestamped transcript.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOL 3: AI Short Video Editor -->
+      <div id="content-video" class="workspace-section hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-neutral-300 mb-2">Upload Source Video (.mp4)</label>
+              <div class="relative border-2 border-dashed border-neutral-800 rounded-2xl p-8 text-center bg-neutral-950 hover:border-[#CCFF00] transition-colors overflow-hidden">
+                <input type="file" id="videoFile" accept="video/mp4,video/quicktime" onchange="handleFileSelect(this, 'videoFileName')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <i class="fa-solid fa-video text-3xl text-[#CCFF00] mb-3"></i>
+                <p id="videoFileName" class="text-sm font-medium text-white mb-1">Tap here to select long-form video</p>
+                <p class="text-xs text-neutral-500">Optimized for vertical clipping (9:16)</p>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-neutral-300 mb-2">Editing Style</label>
+              <select class="w-full bg-neutral-950 border border-neutral-700 rounded-xl p-3 text-white font-medium focus:outline-none focus:border-[#CCFF00]">
+                <option class="bg-neutral-900 text-white py-2">TikTok / Reels Animated Subtitles (9:16)</option>
+                <option class="bg-neutral-900 text-white py-2">Podcast Highlight Clip</option>
+                <option class="bg-neutral-900 text-white py-2">Smart Cut & Zoom</option>
+              </select>
+            </div>
+            <button type="button" onclick="renderVideo()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+              <i class="fa-solid fa-film"></i> Render AI Vertical Short
+            </button>
+          </div>
+
+          <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+            <div id="videoOutput" class="h-64 w-full flex flex-col items-center justify-center text-neutral-600 border border-neutral-800 rounded-xl bg-neutral-900">
+              <i class="fa-solid fa-play text-3xl text-[#CCFF00] mb-2"></i>
+              <p class="text-sm text-neutral-400">Rendered vertical short preview will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Auth Modal Popup -->
+  <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+      <button type="button" onclick="closeModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-white text-lg cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="text-center mb-6">
+        <div class="bg-[#CCFF00] text-black font-extrabold px-3 py-1 rounded-xl text-xl inline-block mb-3">FC</div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">Welcome to Framecrumb</h3>
+        <p class="text-xs text-neutral-400 mt-1">Enter your email to access your AI studio.</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 mb-1">Email Address</label>
+          <input type="email" id="authEmail" placeholder="name@example.com" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white focus:outline-none focus:border-[#CCFF00]" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 mb-1">Password</label>
+          <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white focus:outline-none focus:border-[#CCFF00]" />
+        </div>
+        <button type="button" onclick="handleAuth()" class="w-full bg-[#CCFF00] text-black font-bold py-3.5 rounded-xl hover:bg-[#b3e600] transition-all shadow-lg cursor-pointer">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.workspace-section').forEach(el => el.classList.add('hidden'));
+      ['repurpose', 'transcribe', 'video'].forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        btn.className = "text-neutral-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer";
+      });
+
+      document.getElementById('content-' + tabName).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-' + tabName);
+      activeBtn.className = "bg-[#CCFF00] text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 transition-all cursor-pointer";
+    }
+
+    function handleFileSelect(input, textId) {
+      if (input.files && input.files[0]) {
+        document.getElementById(textId).innerText = "📄 " + input.files[0].name;
+      }
+    }
+
+    function openModal(type) {
+      const modal = document.getElementById('authModal');
+      const title = document.getElementById('modalTitle');
+      title.innerText = type === 'signin' ? 'Welcome Back' : 'Create Your Account';
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function handleAuth() {
+      const email = document.getElementById('authEmail').value;
+      if (!email) {
+        alert('Please enter your email!');
+        return;
+      }
+      closeModal();
+      document.getElementById('userStatus').innerHTML = `<i class="fa-solid fa-circle-check text-[#CCFF00]"></i> Logged in as ${email}`;
+      alert('Successfully logged in!');
+    }
+
+    function generate() {
+      const input = document.getElementById('inputText').value;
+      const btn = document.getElementById('genBtn');
+      const output = document.getElementById('outputArea');
+
+      if (!input.trim()) {
+        alert('Please paste some text first!');
+        return;
+      }
+
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating 10 Assets...';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets';
+        output.innerHTML = `
+          <div>
+            <h4 class="font-bold text-[#CCFF00] mb-2">🎬 Short Video Scripts (3)</h4>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">1. Hook: Stop creating content from scratch. Here is how to turn 1 video into 10 posts...</div>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">2. Hook: The biggest creator mistake in 2026? Ignoring short-form clips.</div>
+          </div>
+          <div>
+            <h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (2)</h4>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">One video in. 10 assets out. Work smarter, not harder.</div>
+          </div>
+        `;
+      }, 1200);
+    }
+
+    async function transcribeAudio() {
+      const fileInput = document.getElementById('audioFile');
+      const output = document.getElementById('transcriptOutput');
+
+      if (!fileInput.files || !fileInput.files[0]) {
+        alert('Please select an audio or video file first!');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      output.innerHTML = '<div class="text-[#CCFF00] font-semibold text-center py-12 animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Uploading & transcribing with Whisper AI...</div>';
+
+      try {
+        const base64Data = await toBase64(file);
+
+        const response = await fetch('/.netlify/functions/transcribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileData: base64Data.split(',')[1],
+            fileName: file.name
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to transcribe file');
+        }
+
+        output.innerHTML = `
+          <div class="bg-neutral-900 p-4 rounded-xl border border-neutral-800 space-y-2">
+            <div class="text-xs text-[#CCFF00] font-bold flex items-center justify-between">
+              <span>✨ Whisper AI Transcription</span>
+              <span>${file.name}</span>
+            </div>
+            <p class="text-neutral-200 leading-relaxed text-sm">${result.text}</p>
+          </div>
+        `;
+      } catch (err) {
+        output.innerHTML = `<div class="text-red-400 p-4 bg-red-950/30 rounded-xl text-center">Error: ${err.message}</div>`;
+      }
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    function renderVideo() {
+      const output = document.getElementById('videoOutput');
+      output.innerHTML = '<div class="text-[#CCFF00] font-semibold animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cropping to 9:16 & burning captions...</div>';
+      setTimeout(() => {
+        output.innerHTML = `
+          <div class="text-center">
+            <i class="fa-solid fa-circle-check text-4xl text-[#CCFF00] mb-2"></i>
+            <p class="font-bold text-white mb-1">Vertical Short Ready!</p>
+            <a href="#" class="text-xs bg-[#CCFF00] text-black font-bold px-3 py-1.5 rounded-lg inline-block mt-2">Download MP4</a>
+          </div>
+        `;
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
