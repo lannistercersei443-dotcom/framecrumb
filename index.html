@@ -1,12 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framecrumb | AI Content Platform</title>
-  </head>
-  <body class="bg-neutral-950 text-neutral-100">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Framecrumb — One video in. More content out.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-[#0A0A0A] text-neutral-100 font-sans antialiased min-h-screen">
+
+  <!-- Header / Navbar -->
+  <header class="border-b border-neutral-800 bg-[#0A0A0A]/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-[#CCFF00] text-black font-extrabold px-2.5 py-1 rounded-lg text-lg">FC</div>
+        <span class="font-bold text-xl tracking-tight text-white">Framecrumb</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-xs bg-neutral-900 border border-neutral-800 text-neutral-400 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-halved text-[#CCFF00]"></i> Daily Trial: 1/1 Available
+        </span>
+        <button class="text-sm font-semibold text-neutral-300 hover:text-white">Sign In</button>
+        <button class="text-sm font-bold bg-[#CCFF00] text-black px-4 py-2 rounded-xl hover:bg-[#b3e600]">Get Started</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight text-white mb-3">
+        One video in. <span class="text-[#CCFF00]">More content out.</span>
+      </h1>
+      <p class="text-neutral-400 text-lg max-w-2xl mx-auto">
+        Repurpose videos into high-performing social scripts, posts, transcripts, and short clips automatically.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex justify-center mb-8">
+      <div class="bg-neutral-900 border border-neutral-800 p-1.5 rounded-2xl flex gap-2">
+        <button class="bg-[#CCFF00] text-black px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 10 Social Assets
+        </button>
+        <button class="text-neutral-400 hover:text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2">
+          <i class="fa-solid fa-file-lines"></i> Speech Transcription
+        </button>
+        <button class="text-neutral-400 hover:text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2">
+          <i class="fa-solid fa-video"></i> AI Short Video Editor
+        </button>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 md:p-8 shadow-2xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Input -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-neutral-300 mb-2">Source Transcript or Text</label>
+            <textarea id="inputText" rows="9" placeholder="Paste your video transcript, podcast notes, or blog text here..." className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl p-4 text-white placeholder-neutral-600 focus:outline-none focus:border-[#CCFF00] w-full resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-neutral-300 mb-2">Content Tone</label>
+            <select className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white focus:outline-none focus:border-[#CCFF00] w-full">
+              <option>Professional & Authoritative</option>
+              <option>Casual & Conversational</option>
+              <option>Educational & Step-by-Step</option>
+            </select>
+          </div>
+          <button id="genBtn" onclick="generate()" class="w-full bg-[#CCFF00] text-black font-bold py-4 rounded-xl hover:bg-[#b3e600] transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets
+          </button>
+        </div>
+
+        <!-- Output -->
+        <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-between">
+            Generated Output
+            <span class="text-xs bg-neutral-800 text-neutral-400 px-2.5 py-1 rounded-md">Ready</span>
+          </h3>
+          <div id="outputArea" class="space-y-4 text-sm text-neutral-300">
+            <div class="h-64 flex flex-col items-center justify-center text-center text-neutral-600">
+              <i class="fa-solid fa-sparkles text-2xl mb-2"></i>
+              <p>Paste text on the left and click generate to create your social assets.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function generate() {
+      const input = document.getElementById('inputText').value;
+      const btn = document.getElementById('genBtn');
+      const output = document.getElementById('outputArea');
+
+      if (!input.trim()) {
+        alert('Please paste some text first!');
+        return;
+      }
+
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating 10 Assets...';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate 10 Social Assets';
+        output.innerHTML = `
+          <div>
+            <h4 class="font-bold text-[#CCFF00] mb-2">🎬 Short Video Scripts (3)</h4>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">1. Hook: Stop creating content from scratch. Here is how to turn 1 video into 10 posts...</div>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">2. Hook: The biggest creator mistake in 2026? Ignoring short-form clips.</div>
+          </div>
+          <div>
+            <h4 class="font-bold text-[#CCFF00] mb-2">🐦 X Posts (2)</h4>
+            <div class="bg-neutral-900 p-3 rounded-xl mb-2 border border-neutral-800">One video in. 10 assets out. Work smarter, not harder.</div>
+          </div>
+        `;
+      }, 1200);
+    }
+  </script>
+</body>
 </html>
+
